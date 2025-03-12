@@ -19,6 +19,25 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
 
     def create(self, request, *args, **kwargs):
+        # Extract username and email from request data
+        username = request.data.get('username')
+        email = request.data.get('email')
+
+        # Check if username already exists
+        if username and User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already used."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Check if email already exists
+        if email and User.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email's already used."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Proceed with serializer validation and saving the user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
