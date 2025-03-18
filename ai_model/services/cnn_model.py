@@ -60,8 +60,6 @@ def predict_plant_disease(image_path, user):
     # Compress & Save the Image
     saved_image_path = compress_and_save_image(image_path)
 
-    processed_image = preprocess_image(saved_image_path)
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     transform = transforms.Compose([

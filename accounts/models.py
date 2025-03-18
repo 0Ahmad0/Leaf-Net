@@ -6,6 +6,8 @@ import uuid
 from datetime import timedelta
 from django.utils import timezone
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class User(AbstractUser):
     pass
@@ -24,3 +26,22 @@ class PasswordResetOTP(models.Model):
         if not self.pk:
             self.expires_at = timezone.now() + timedelta(minutes=10)  # صلاحية لمدة 10 دقائق
         super().save(*args, **kwargs)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+    
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Use get_or_create to ensure no duplicate is created
+        UserProfile.objects.get_or_create(user=instance)
+    else:
+        # If needed, update the profile; otherwise, this may be optional
+        if hasattr(instance, 'profile'):
+            instance.profile.save()

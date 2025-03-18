@@ -81,7 +81,6 @@ class LoginView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(**serializer.validated_data)
-
         if not user:
             return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
         if not user.is_active:
@@ -162,15 +161,26 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
             return self.request.user
         except User.DoesNotExist:
             raise NotFound("User not found.")
-
+        
     def update(self, request, *args, **kwargs):
-        """Handle user profile updates with validation."""
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": "Profile updated successfully.", "user": serializer.data},
-                        status=status.HTTP_200_OK)
+
+        # Check if the request includes a profile image file
+        profile_image = request.data.get('profile_image')
+        if profile_image:
+            # Assuming the user has a related UserProfile instance via a one-to-one relationship
+            user_profile = instance.profile
+            user_profile.image = profile_image
+            user_profile.save()
+
+        return Response({
+            "message": "Profile updated successfully.",
+            "user": serializer.data
+        }, status=status.HTTP_200_OK)
+    
 
     def destroy(self, request, *args, **kwargs):
         """Handle user account deletion securely."""

@@ -46,10 +46,12 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        # other authentication classes if needed
     ],
 }
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.AllowInactiveModelBackend',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -157,3 +159,7 @@ EMAIL_HOST_USER = 'rama.re.1128@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'rama.re.1128@gmail.com'
 
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
