@@ -1,6 +1,4 @@
 import numpy as np
-from .compress_image import compress_and_save_image
-from .image_processing import preprocess_image
 from .treatment_service import get_treatment
 from ..models import PlantDiagnosis
 
@@ -57,9 +55,6 @@ class CNNClassifier(nn.Module):
 
 
 def predict_plant_disease(image_path, user):
-    # Compress & Save the Image
-    saved_image_path = compress_and_save_image(image_path)
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     transform = transforms.Compose([
@@ -69,7 +64,7 @@ def predict_plant_disease(image_path, user):
                            std=[0.229, 0.224, 0.225])
     ])
 
-    image = Image.open(saved_image_path).convert('RGB')
+    image = Image.open(image_path).convert('RGB')
     image_tensor = transform(image).unsqueeze(0).to(device)
 
     model = CNNClassifier(num_classes=len(class_names)).to(device)
@@ -94,7 +89,7 @@ def predict_plant_disease(image_path, user):
 
     diagnosis = PlantDiagnosis.objects.create(
         user=user,
-        image=saved_image_path,
+        image=image_path,
         plant_name=plant_name,
         disease=disease_name,
         confidence=confidence,
