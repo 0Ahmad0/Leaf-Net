@@ -95,7 +95,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3308',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
@@ -147,17 +147,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # send email
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKND = 'django.core.mail.backends.smtp.EmailBackend'
 # send to console
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # edit with project email
-EMAIL_HOST_USER = 'rama.re.1128@gmail.com'
-EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'rama.re.1128@gmail.com'
+EMAIL_HOST_USER = 'leafnett.1@gmail.com'
+EMAIL_HOST_PASSWORD = 'tsrf fqvw tcbc vwnh'
+DEFAULT_FROM_EMAIL = 'leafnett.1@gmail.com'
 
 import os
 
